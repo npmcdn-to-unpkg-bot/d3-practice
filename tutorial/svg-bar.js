@@ -1,6 +1,6 @@
 var dataset = [ 5, 10, 13, 19, 21, 25, 22, 18, 15, 13,
                 11, 12, 15, 20, 18, 17, 16, 18, 23, 25 ];
-
+d3.select('#svgCon1').append('h2').text('The Old Chart');
 d3.select("#svgCon1").selectAll("div")
     .data(dataset)
     .enter()
@@ -18,6 +18,7 @@ d3.select("#svgCon1").selectAll("div")
 var w = 500;
 var h = 100;
 //Create SVG element
+d3.select('#svgCon2').append('h2').text('The new Chart');
 var svg = d3.select("#svgCon2")
             .append("svg")
             .attr("width", w)
