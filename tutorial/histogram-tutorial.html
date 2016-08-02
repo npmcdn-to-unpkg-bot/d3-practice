@@ -13,47 +13,56 @@
 
 </style>
 <body>
-<script src="./d3.min.js"></script>
+<script src="../d3.min.js"></script>
 <script>
+	//入门可以参考教程：http://alignedleft.com/tutorials/d3/scales
     var data = d3.range(1000).map(d3.randomBates(10));
-    
-    //data = [123, 23, 12 ,23, 21, 11, 12, 4, 9, 12, 14];
-
+	
     var formatCount = d3.format(",.0f");
 
     var margin = {top: 10, right: 30, bottom: 30, left: 30},
         width = 960 - margin.left - margin.right,
         height = 500 - margin.top - margin.bottom;
 
-    var x = d3.scaleLinear()
-        .rangeRound([0, width]);
+	//创建x轴的伸缩量
+    var x = d3.scaleLinear() //default domain [0, 1]
+        .rangeRound([0, width]); //continuous.range(range).interpolate(d3.interpolateRound);
 
+	//创建histogram的数组，具体格式如：[[a, b, c].length/x0/x1]
+	//二维数组，每个数组元素的x0和x1代表的是范围，每个数组元素的length代表其内bin的个数（Thus, the length of the bin is the number of elements in that bin）
     var bins = d3.histogram()
-        .domain(x.domain())
-        .thresholds(x.ticks(20))
+        .domain(x.domain()) //设置domain，这里默认的domain为[0, 1]
+        .thresholds(x.ticks(20))//两两组成阀值[0, 0.05, 0.1, 0.15000000000000002, 0.2, 0.25, 0.30000000000000004, 0.35000000000000003, 0.4, 0.45, 0.5, 0.55, 0.6000000000000001, 0.65, 0.7000000000000001, 0.75, 0.8, 0.8500000000000001, 0.9, 0.9500000000000001, 1]
         (data);
+	//这里会根据thresholds的两两个数组元素构成范围，判断data中有多少个元素分别属于这些范围内
+	//console.dir(bins) 调用histogram的最终效果是生成范围内的数量 [[a, b, c].length/x0/x1]
 
+	//创建y轴的伸缩量
     var y = d3.scaleLinear()
         .domain([0, d3.max(bins, function(d) { return d.length; })])
         .range([height, 0]);
 
+	//创建子容器
     var svg = d3.select("body").append("svg")
         .attr("width", width + margin.left + margin.right)
         .attr("height", height + margin.top + margin.bottom)
       .append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
+	//根据histogram生成的数据去生成bar
     var bar = svg.selectAll(".bar")
         .data(bins)
       .enter().append("g")
         .attr("class", "bar")
         .attr("transform", function(d) { return "translate(" + x(d.x0) + "," + y(d.length) + ")"; });
 
+	//画矩形
     bar.append("rect")
         .attr("x", 1)
         .attr("width", x(bins[0].x1) - x(bins[0].x0) - 1)
         .attr("height", function(d) { return height - y(d.length); });
 
+	//添加数组标志
     bar.append("text")
         .attr("dy", ".75em")
         .attr("y", 6)
@@ -61,6 +70,7 @@
         .attr("text-anchor", "middle")
         .text(function(d) { return formatCount(d.length); });
 
+	//添加x轴
     svg.append("g")
         .attr("class", "axis axis--x")
         .attr("transform", "translate(0," + height + ")")
