@@ -48,6 +48,19 @@
     height: 250px;
 }
 
+.commonchart-histogram .vertical-line, .commonchart-histogram .horizontal-line{
+    fill : none;
+    stroke : rgb(204, 204, 204);
+    stroke-width: 1px;
+    shape-rendering: crispEdges;
+}
+
+@media(max-width:1600px) {
+    .commonchart-histogram .axis--x g:nth-child(odd) text {
+        display: none;
+    }    
+}
+
 </style>
 <body>
 <div class="chart-container"></div>
